@@ -104,10 +104,10 @@ struct devs_id __initconst device_ids[] = {
 	 &wifi_platform_data_fastirq},
 
 	/* I2C devices*/
-	{"pcal9555a-1", SFI_DEV_TYPE_I2C, 1, &pcal9555a_platform_data, NULL},
-	{"pcal9555a-2", SFI_DEV_TYPE_I2C, 1, &pcal9555a_platform_data, NULL},
-	{"pcal9555a-3", SFI_DEV_TYPE_I2C, 1, &pcal9555a_platform_data, NULL},
-	{"pcal9555a-4", SFI_DEV_TYPE_I2C, 1, &pcal9555a_platform_data, NULL},
+//	{"pcal9555a-1", SFI_DEV_TYPE_I2C, 1, &pcal9555a_platform_data, NULL},
+//	{"pcal9555a-2", SFI_DEV_TYPE_I2C, 1, &pcal9555a_platform_data, NULL},
+//	{"pcal9555a-3", SFI_DEV_TYPE_I2C, 1, &pcal9555a_platform_data, NULL},
+//	{"pcal9555a-4", SFI_DEV_TYPE_I2C, 1, &pcal9555a_platform_data, NULL},
 
 	/* SPI devices */
 	{"spidev", SFI_DEV_TYPE_SPI, 0, &spidev_platform_data, NULL},
