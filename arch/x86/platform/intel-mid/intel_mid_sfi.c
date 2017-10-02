@@ -29,6 +29,7 @@
 #include <linux/mmc/core.h>
 #include <linux/mmc/card.h>
 #include <linux/blkdev.h>
+#include <linux/lnw_gpio.h>
 
 #include <asm/setup.h>
 #include <asm/mpspec_def.h>
@@ -619,7 +620,60 @@ static struct devs_id mcp2515_devs_id ={
 	.device_handler = NULL,
 };
 
+// adding lsm9ds0 platform info to edison image
+// hack suggested in http://virtuslab.com/blog/hacking-platform-drivers-intel-edison/
+void __init *get_lsm9ds0_platform_data(void *info)
+{
+	return NULL;
+}
 
+static struct sfi_device_table_entry sfi_lsm9ds0_gyro_table_entry = {
+	.type = SFI_DEV_TYPE_I2C,
+    .host_num = 6, // <-- The Most Popular I2C Bus on Intel Edison
+    .addr = 0x6a, // <-- Address of lsm9ds0 with A0 tied to ground
+    .irq = 165, // <-- this value won't be actually used by this driver, it's u8 so won't fit INTEL_MID_IRQ_OFFSET
+    .max_freq = 400000,
+    .name = "lsm9ds0_gyro", // <-- name of kernel module for handling this device
+};
+static struct devs_id lsm9ds0_gyro_devs_id = {
+	.type = SFI_DEV_TYPE_I2C,
+    .delay = 1,
+    .get_platform_data = &get_lsm9ds0_platform_data,
+    .device_handler = NULL,
+};
+static struct sfi_device_table_entry sfi_lsm9ds0_accel_magn_table_entry = {
+	.type = SFI_DEV_TYPE_I2C,
+    .host_num = 6, // <-- The Most Popular I2C Bus on Intel Edison
+    .addr = 0x1e, // <-- Address of lsm9ds0 with A0 tied to ground
+    .irq = 165, // <-- this value won't be actually used by this driver, it's u8 so won't fit INTEL_MID_IRQ_OFFSET
+    .max_freq = 400000,
+    .name = "lsm9ds0_accel_magn", // <-- name of kernel module for handling this device
+};
+static struct devs_id lsm9ds0_accel_magn_devs_id = {
+	.type = SFI_DEV_TYPE_I2C,
+    .delay = 1,
+    .get_platform_data =&get_lsm9ds0_platform_data,
+    .device_handler = NULL,
+};
+// adding lps331ap platform info to edison image
+void __init *get_lps331ap_platform_data(void *info)
+{
+	return NULL;
+}
+static struct sfi_device_table_entry sfi_lps331ap_table_entry = {
+	.type = SFI_DEV_TYPE_I2C,
+    	.host_num = 6, // <-- The Most Popular I2C Bus on Intel Edison
+    	.addr = 0x5c, // <-- Address of lps331ap with A0 tied to ground
+    	.irq = 165, // <-- this value won't be actually used by this driver, it's u8 so won't fit INTEL_MID_IRQ_OFFSET
+    	.max_freq = 400000,
+    	.name = "lps331ap", // <-- name of kernel module for handling this device
+};
+static struct devs_id lps331ap_devs_id = {
+	.type = SFI_DEV_TYPE_I2C,
+    	.delay = 1,
+    	.get_platform_data =&get_lps331ap_platform_data,
+    	.device_handler = NULL,
+};
 
 static int __init intel_mid_platform_init(void)
 {
@@ -628,8 +682,16 @@ static int __init intel_mid_platform_init(void)
 	sfi_table_parse(SFI_SIG_GPIO, NULL, NULL, sfi_parse_gpio);
 	sfi_table_parse(SFI_SIG_DEVS, NULL, NULL, sfi_parse_devs);
 
+	// adding mcp2515 to spi bus
 	sfi_handle_spi_dev(&sfi_mcp2515_table_entry, &mcp2515_devs_id);
-
+	// set gpio to I2C-6 to be I2C pins
+	lnw_gpio_set_alt(27, LNW_ALT_1 );
+	lnw_gpio_set_alt(28, LNW_ALT_1 );
+	// adding customized i2c devices to i2c-6 bus
+	sfi_handle_i2c_dev(&sfi_lsm9ds0_gyro_table_entry, &lsm9ds0_gyro_devs_id);
+	sfi_handle_i2c_dev(&sfi_lsm9ds0_accel_magn_table_entry, &lsm9ds0_accel_magn_devs_id);
+	sfi_handle_i2c_dev(&sfi_lps331ap_table_entry, &lps331ap_devs_id);
+	
 	return 0;
 }
 arch_initcall(intel_mid_platform_init);
