@@ -44,6 +44,8 @@
 #include <asm/reboot.h>
 #include "intel_mid_weak_decls.h"
 
+#include "./device_libs/platform_mcp2515.h"
+
 #define	SFI_SIG_OEM0	"OEM0"
 #define MAX_IPCDEVS	24
 #define MAX_SCU_SPI	24
@@ -596,12 +598,37 @@ static int __init sfi_parse_oemb(struct sfi_table_header *table)
 	return 0;
 }
 
+
+// adding MCP2515 to edison
+// Hack suggested in 
+// https://communities.intel.com/thread/59205?start=0&tstart=0
+
+
+static struct sfi_device_table_entry sfi_mcp2515_table_entry = {
+	.type = SFI_DEV_TYPE_SPI,
+	.host_num = 5,
+	.addr = 0,
+	.irq = 0, // we set the IRQ later.
+	.max_freq = 10000000, // The maximum SPI clock frequency for the MCP2515 is 10 MHz
+	.name = "mcp2515",
+};
+static struct devs_id mcp2515_devs_id ={
+	.type = SFI_DEV_TYPE_SPI,
+	.delay = 0,
+	.get_platform_data = &mcp2515_platform_data,
+	.device_handler = NULL,
+};
+
+
+
 static int __init intel_mid_platform_init(void)
 {
 	/* Get SFI OEMB Layout */
 	sfi_table_parse(SFI_SIG_OEMB, NULL, NULL, sfi_parse_oemb);
 	sfi_table_parse(SFI_SIG_GPIO, NULL, NULL, sfi_parse_gpio);
 	sfi_table_parse(SFI_SIG_DEVS, NULL, NULL, sfi_parse_devs);
+
+	sfi_handle_spi_dev(&sfi_mcp2515_table_entry, &mcp2515_devs_id);
 
 	return 0;
 }
