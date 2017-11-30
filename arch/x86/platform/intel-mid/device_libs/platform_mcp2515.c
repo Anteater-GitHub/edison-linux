@@ -25,7 +25,7 @@ static void tng_ssp_spi_platform_pinmux(void);
 static int tng_ssp_spi2_CS0_gpio = 110;
 
 static struct mcp251x_platform_data mcp251x_info = {
-        .oscillator_frequency = 8 * 1000 * 1000,
+        .oscillator_frequency = 16 * 1000 * 1000,
         .board_specific_setup = mcp2515_board_specific_setup,
         .power_enable = NULL, // mcp251x_power_enable,
         .transceiver_enable = NULL,

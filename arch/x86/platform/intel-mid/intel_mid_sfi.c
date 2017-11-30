@@ -684,13 +684,17 @@ static int __init intel_mid_platform_init(void)
 
 	// adding mcp2515 to spi bus
 	sfi_handle_spi_dev(&sfi_mcp2515_table_entry, &mcp2515_devs_id);
-	// set gpio to I2C-6 to be I2C pins
-	lnw_gpio_set_alt(27, LNW_ALT_1 );
-	lnw_gpio_set_alt(28, LNW_ALT_1 );
+
 	// adding customized i2c devices to i2c-6 bus
 	sfi_handle_i2c_dev(&sfi_lsm9ds0_gyro_table_entry, &lsm9ds0_gyro_devs_id);
 	sfi_handle_i2c_dev(&sfi_lsm9ds0_accel_magn_table_entry, &lsm9ds0_accel_magn_devs_id);
 	sfi_handle_i2c_dev(&sfi_lps331ap_table_entry, &lps331ap_devs_id);
+	// set gpio to I2C-6 to be I2C pins
+//	gpio_free(27);
+//	gpio_free(28);
+//	lnw_gpio_set_alt(27, LNW_ALT_1 );
+//	lnw_gpio_set_alt(28, LNW_ALT_1 );
+
 	
 	return 0;
 }
