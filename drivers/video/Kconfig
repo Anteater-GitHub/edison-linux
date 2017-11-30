@@ -88,7 +88,19 @@ config FIRMWARE_EDID
 	 something on your display, try setting this to N.  Matrox cards in
 	 combination with certain motherboards and monitors are known to
 	 suffer from this problem.
-
+config FB_SSD1306
+	bool "Solomon SSD1306 framebuffer support"
+	depends on FB && I2C
+	depends on GPIOLIB
+	select FB_SYS_FOPS
+	select FB_SYS_FILLRECT
+	select FB_SYS_COPYAREA
+	select FB_SYS_IMAGEBLIT
+	select FB_DEFERRED_IO
+	select PWM
+	help
+	  This driver implements support for the Solomon SSD1306
+	  OLED controller over I2C
 config FB_DDC
        tristate
        depends on FB
@@ -107,7 +119,7 @@ config FB_BOOT_VESA_SUPPORT
 config FB_CFB_FILLRECT
 	tristate
 	depends on FB
-	default n
+	default y
 	---help---
 	  Include the cfb_fillrect function for generic software rectangle
 	  filling. This is used by drivers that don't provide their own
@@ -116,7 +128,7 @@ config FB_CFB_FILLRECT
 config FB_CFB_COPYAREA
 	tristate
 	depends on FB
-	default n
+	default y
 	---help---
 	  Include the cfb_copyarea function for generic software area copying.
 	  This is used by drivers that don't provide their own (accelerated)
@@ -125,7 +137,7 @@ config FB_CFB_COPYAREA
 config FB_CFB_IMAGEBLIT
 	tristate
 	depends on FB
-	default n
+	default y
 	---help---
 	  Include the cfb_imageblit function for generic software image
 	  blitting. This is used by drivers that don't provide their own
@@ -134,7 +146,7 @@ config FB_CFB_IMAGEBLIT
 config FB_CFB_REV_PIXELS_IN_BYTE
 	bool
 	depends on FB
-	default n
+	default y
 	---help---
 	  Allow generic frame-buffer functions to work on displays with 1, 2
 	  and 4 bits per pixel depths which has opposite order of pixels in
@@ -143,7 +155,7 @@ config FB_CFB_REV_PIXELS_IN_BYTE
 config FB_SYS_FILLRECT
 	tristate
 	depends on FB
-	default n
+	default y
 	---help---
 	  Include the sys_fillrect function for generic software rectangle
 	  filling. This is used by drivers that don't provide their own
@@ -152,7 +164,7 @@ config FB_SYS_FILLRECT
 config FB_SYS_COPYAREA
 	tristate
 	depends on FB
-	default n
+	default y
 	---help---
 	  Include the sys_copyarea function for generic software area copying.
 	  This is used by drivers that don't provide their own (accelerated)
@@ -161,7 +173,7 @@ config FB_SYS_COPYAREA
 config FB_SYS_IMAGEBLIT
 	tristate
 	depends on FB
-	default n
+	default y
 	---help---
 	  Include the sys_imageblit function for generic software image
 	  blitting. This is used by drivers that don't provide their own
@@ -189,15 +201,16 @@ config FB_BIG_ENDIAN
 config FB_LITTLE_ENDIAN
 	bool "Support for Little-Endian framebuffers only"
 
+
 endchoice
 
 config FB_SYS_FOPS
        tristate
        depends on FB
-       default n
+       default y
 
 config FB_DEFERRED_IO
-	bool
+	bool "frame buffer deferred io support"
 	depends on FB
 
 config FB_HECUBA
@@ -2495,6 +2508,8 @@ config FB_SH_MOBILE_MERAM
 	  reliable access under heavy main memory bus traffic situations.
 	  Up to 4 memory channels can be configured, allowing 4 RGB or
 	  2 YCbCr framebuffers to be configured.
+
+
 
 config FB_SSD1307
 	tristate "Solomon SSD1307 framebuffer support"

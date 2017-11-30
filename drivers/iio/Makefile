@@ -10,6 +10,9 @@ industrialio-$(CONFIG_IIO_BUFFER_CB) += buffer_cb.o
 
 obj-$(CONFIG_IIO_TRIGGERED_BUFFER) += industrialio-triggered-buffer.o
 obj-$(CONFIG_IIO_KFIFO_BUF) += kfifo_buf.o
+obj-$(CONFIG_IIO_BME280) += iio_bme280.o
+obj-$(CONFIG_IIO_LPS331AP) += iio_lps331ap.o
+obj-$(CONFIG_IIO_LSM9DS0) += iio_lsm9ds0.o
 
 obj-y += accel/
 obj-y += adc/
